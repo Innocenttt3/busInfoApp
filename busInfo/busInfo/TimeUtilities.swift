@@ -16,7 +16,7 @@ func formatTime(_ time: Int) -> String {
     return "\(hours):\(minutes)"
 }
 
-func currentTimeAsInt() -> Int {
+func currentTimeAsInt() -> Int? {
     let date = Date()
     let calendar = Calendar.current
     let components = calendar.dateComponents([.hour, .minute], from: date)

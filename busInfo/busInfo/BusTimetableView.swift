@@ -19,23 +19,27 @@ struct BusTimetableView: View {
     var body: some View {
         ZStack {
             List {
-                ForEach(busStop.timetable.indices, id: \.self) { index in
-                    if currentTimeAsInt() < self.busStop.timetable[index] {
-                        VStack(alignment: .leading) {
-                            Button(action: {
-                                let time = formatTime(self.busStop.timetable[index])
-                                self.shareText = "I'm catching the bus number \(self.busLine.number) at \(time) from \(self.busStop.name)."
-                                self.selectedTimeIndex = index
-                            }) {
-                                Text(formatTime(self.busStop.timetable[index]))
-
-                                    .foregroundColor(self.selectedTimeIndex == index ? .blue : .primary)
+                if let timetable = busStop.timetable {
+                    ForEach(timetable.indices, id: \.self) { index in
+                        let time = timetable[index]
+                        if let currentTime = currentTimeAsInt(), currentTime < time {
+                            VStack(alignment: .leading) {
+                                Button(action: {
+                                    self.shareText = "I'm catching the bus number \(self.busLine.number) at \(formatTime(time)) from \(self.busStop.name ?? "")."
+                                    self.selectedTimeIndex = index
+                                }) {
+                                    Text(formatTime(time))
+                                        .foregroundColor(self.selectedTimeIndex == index ? .blue : .primary)
+                                }
                             }
                         }
                     }
+                } else {
+                    Text("No timetable available")
+                        .foregroundColor(.gray)
                 }
             }
-            .navigationBarTitle("\(busLine.number) - \(busStop.name) ⏰", displayMode: .inline)
+            .navigationBarTitle("\(busLine.number ?? 0) - \(busStop.name ?? "") ⏰", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -72,15 +76,10 @@ struct BusTimetableView: View {
                     self.userLocation = location
                 }
             }
-            if let firstTime = busStop.timetable.first {
+            if let firstTime = busStop.timetable?.first {
                 self.shareText = "I'm catching the bus number \(busLine.number) at \(formatTime(firstTime)) from \(busStop.name)."
             }
         }
     }
 }
-
-
-
-
-
 

@@ -39,17 +39,17 @@ class BusViewModel: ObservableObject {
                     }
 
                     for subDocument in subDocuments {
-                        if let name = subDocument.data()["NameOfStop"] as? String,
-                           let timeArray = subDocument.data()["TimeTable"] as? [Int],
-                           let geoPoint = subDocument.data()["Location"] as? GeoPoint {
-                            let location = CLLocation(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
-                            stops.append(BusStop(name: name, timetable: timeArray, location: location))
-                        }
+                        let name = subDocument.data()["NameOfStop"] as? String ?? ""
+                        let timeArray = subDocument.data()["TimeTable"] as? [Int] ?? []
+                        let geoPoint = subDocument.data()["Location"] as? GeoPoint
+                        let location = geoPoint != nil ? CLLocation(latitude: geoPoint!.latitude, longitude: geoPoint!.longitude) : nil
+                        stops.append(BusStop(name: name, timetable: timeArray, location: location))
                     }
+
                     tempBusLines.append(BusLine(number: number, stops: stops))
         
                     DispatchQueue.main.async {
-                        // Sort the bus lines by number before updating the @Published property
+                       
                         self.busLines = tempBusLines.sorted(by: { $0.number < $1.number })
                     }
                 }

@@ -13,10 +13,13 @@ struct BusStopsView: View {
     var body: some View {
         NavigationView {
             List(busLine.stops) { stop in
-                NavigationLink(destination: BusTimetableView(busLine: busLine, busStop: stop)) {
-                    Text(stop.name)
+                if let stopName = stop.name {
+                    NavigationLink(destination: BusTimetableView(busLine: busLine, busStop: stop)) {
+                        Text(stopName)
+                    }
                 }
             }
+
             .navigationBarTitle("Stops for Bus: \(busLine.number) 📍")
         }
     }
