@@ -20,7 +20,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarTitle("Bus Lines")
+            .navigationBarTitle("Bus Lines 🚌")
             .onAppear() {
                 self.viewModel.fetchData()
             }

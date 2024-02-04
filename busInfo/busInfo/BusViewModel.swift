@@ -16,7 +16,9 @@ class BusViewModel: ObservableObject {
     private var database = Firestore.firestore()
      
     func fetchData() {
-        database.collection("BusLines").addSnapshotListener { (querySnapshot, error) in
+        database.collection("BusLines")
+            .order(by: "NumberOfBus", descending: true)
+            .addSnapshotListener { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
                 return
@@ -45,14 +47,16 @@ class BusViewModel: ObservableObject {
                         }
                     }
                     tempBusLines.append(BusLine(number: number, stops: stops))
-    
+        
                     DispatchQueue.main.async {
-                        self.busLines = tempBusLines
+                        // Sort the bus lines by number before updating the @Published property
+                        self.busLines = tempBusLines.sorted(by: { $0.number < $1.number })
                     }
                 }
             }
         }
     }
+
 
 
 }

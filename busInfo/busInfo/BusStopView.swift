@@ -17,7 +17,7 @@ struct BusStopsView: View {
                     Text(stop.name)
                 }
             }
-            .navigationBarTitle("Stops for Bus: \(busLine.number)")
+            .navigationBarTitle("Stops for Bus: \(busLine.number) 📍")
         }
     }
 }
