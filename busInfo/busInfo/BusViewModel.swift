@@ -1,10 +1,3 @@
-//
-//  BusViewModel.swift
-//  busInfo
-//
-//  Created by Kamil Golawski on 03/02/2024.
-//
-
 import Foundation
 import FirebaseFirestore
 import CoreLocation
@@ -42,12 +35,12 @@ class BusViewModel: ObservableObject {
                         let name = subDocument.data()["NameOfStop"] as? String ?? ""
                         let timeArray = subDocument.data()["TimeTable"] as? [Int] ?? []
                         let geoPoint = subDocument.data()["Location"] as? GeoPoint
+                        let index = subDocument.data()["Index"] as? Int
                         let location = geoPoint != nil ? CLLocation(latitude: geoPoint!.latitude, longitude: geoPoint!.longitude) : nil
-                        stops.append(BusStop(name: name, timetable: timeArray, location: location))
+                        stops.append(BusStop(name: name, timetable: timeArray, location: location, index: index))
                     }
-
-                    tempBusLines.append(BusLine(number: number, stops: stops))
-        
+                    let sortedStops = stops.sorted { $0.index ?? Int.max < $1.index ?? Int.max }
+                    tempBusLines.append(BusLine(number: number, stops: sortedStops))
                     DispatchQueue.main.async {
                        
                         self.busLines = tempBusLines.sorted(by: { $0.number < $1.number })
